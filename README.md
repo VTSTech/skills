@@ -10,6 +10,7 @@ A curated collection of **AgentSkills** — reusable, modular instruction sets d
 - [Included Skills](#included-skills)
   - [ACP — Agent Control Panel](#acp--agent-control-panel)
   - [Codebase Audit — Intelligence Brief & Audit Reports](#codebase-audit--intelligence-brief--audit-reports)
+  - [Godot Engine — Game Development Toolkit](#godot-engine--game-development-toolkit)
   - [PS2 ELF — Reverse Engineering Toolkit](#ps2-elf--reverse-engineering-toolkit)
 - [How to Use These Skills](#how-to-use-these-skills)
 - [Skill Conventions](#skill-conventions)
@@ -60,11 +61,17 @@ skills/
 │   └── references/                    #   Reference templates
 │       ├── brief-template.md          #     Template for intelligence briefs
 │       └── audit-template.md          #     Template for audit reports
+├── godot-engine/                      # Godot Engine game development skill
+│   ├── SKILL.md                       #   Full skill definition (v0.0.3)
+│   └── references/                    #   Reference materials
+│       ├── gdscript.md                #     Complete GDScript reference
+│       ├── common-patterns.md         #     Reusable game architecture patterns
+│       └── learnings.md               #     Discovered gotchas & version notes
 └── ps2-elf/                           # PS2 ELF Reverse Engineering skill
     └── SKILL.md                       #   Full skill definition (v0.0.1)
 ```
 
-Each skill resides in its own directory containing at minimum a `SKILL.md` file. Some skills include supplementary reference materials in subdirectories (such as templates and example outputs).
+Each skill resides in its own directory containing at minimum a `SKILL.md` file. Some skills include supplementary reference materials in subdirectories (such as templates, language references, and example outputs).
 
 ---
 
@@ -133,6 +140,38 @@ The **Codebase Audit** skill solves a critical efficiency problem: understanding
 
 ---
 
+### Godot Engine — Game Development Toolkit
+
+| Attribute | Value |
+|-----------|-------|
+| **Version** | 0.0.3 |
+| **Path** | `godot-engine/SKILL.md` |
+| **References** | `references/gdscript.md`, `references/common-patterns.md`, `references/learnings.md` |
+| **Agent Agnostic** | Yes |
+
+The **Godot Engine** skill is a comprehensive game development toolkit for building 2D and 3D games, prototyping game mechanics, scaffolding projects, and debugging Godot 4.x projects. Designed to be agent-agnostic, it works across any compatible AI agent platform without framework-specific lock-ins. The skill covers the full game development lifecycle — from project scaffolding and scene architecture to input handling, physics, rendering, and export — providing agents with the knowledge needed to assist with any Godot workflow.
+
+**Core Capabilities:**
+
+- **Godot 4.x Architecture Coverage:** Teaches agents the four pillars of Godot — Nodes, Scenes, the Scene Tree, and Signals — along with resource paths (`res://`, `user://`), scene file formats (`.tscn` / `.scn`), editor screens, and the integrated class reference. This foundational knowledge ensures agents understand *how* Godot works, not just *what* to type.
+- **GDScript Reference:** A complete GDScript guide covering syntax, type hints, annotations, built-in vector/transform types, lifecycle callbacks (`_init`, `_ready`, `_process`, `_physics_process`, `_input`), and style conventions. The separate `references/gdscript.md` file provides in-depth language documentation that agents can consult without bloating the main skill file.
+- **Project Scaffolding Commands:** Slash-command-style scaffolding for rapid project creation:
+  - `/godot new <name> [2d|3d]` — creates a full project directory structure with scenes, scripts, assets, and addons folders.
+  - `/godot add-scene <name> <root-node-type>` — creates a new `.tscn` scene with a specified root node (e.g., `CharacterBody2D`, `Control`).
+  - `/godot add-script <scene-name> <script-name>` — attaches a GDScript to an existing scene's root node.
+- **Genre-Specific Node Tree Templates:** Ready-to-use scene tree architectures for common game genres, including 2D top-down ARPG (Diablo-style), 3D first-person, and 2D platformer. Each template includes the full node hierarchy with comments explaining the purpose of each node, plus key implementation patterns (pathfinding with `NavigationRegion2D`, coyote time and jump buffering for platformers, mouse look and movement for FPS, etc.).
+- **Game Development Patterns:** The `references/common-patterns.md` file provides detailed implementations for reusable systems: state machines (enum-based and resource-based), component pattern, save/load (JSON via `FileAccess`), scene transitions with loading screens, object pooling, singletons/autoloads, screen shake, damage numbers, dialogue systems, and inventory systems.
+- **Physics & Collision:** Covers both 2D and 3D physics stacks — `StaticBody`, `RigidBody`, `CharacterBody` (with `move_and_slide()`), `AnimatableBody`, and `Area` variants — along with collision layers/masks, detection zones, and physics material configuration.
+- **Rendering & Visuals:** Guidance on 2D rendering (sprites, animated sprites, tilemaps, cameras, parallax) and 3D rendering (Forward+/Mobile/Compatibility renderers, WorldEnvironment, lighting, GPUParticles), plus an overview of Godot's GLSL-inspired shader language and material system.
+- **Input System:** Best practices using Input Actions over raw key codes, `Input.get_vector()` for analog movement, and proper event handling through `_input` / `_unhandled_input` callbacks.
+- **File Editing Rules:** Critical guidance for avoiding common corruption issues — GDScript requires TAB indentation (tools that convert tabs to spaces will break parsing), `.tscn` files have strict format requirements for `ext_resource` declarations and node references, and syntax pitfalls like nullable type suffixes and built-in name shadowing.
+- **Self-Update Protocol:** A "living skill" design that improves over time. When agents discover new patterns, fix bugs, learn from docs, or receive user corrections, they are instructed to surgically update the appropriate reference files, bump the version in frontmatter, and log the change in `references/learnings.md`. A `/godot learn <topic>` command enables directed learning from official docs.
+- **Export & Deployment:** Configuration guidance for export presets across Windows, Linux, macOS, Android, iOS, and Web (HTML5/WebGL/WebGPU), including command-line export for CI/CD workflows.
+
+**Triggers:** Godot game development, GDScript programming, scene/node architecture, game prototyping, input handling, physics, collision, UI/Control nodes, shader programming, performance optimization, multiplayer/networking, or any Godot 4.x workflow.
+
+---
+
 ### PS2 ELF — Reverse Engineering Toolkit
 
 | Attribute | Value |
@@ -191,10 +230,11 @@ All skills in this repository follow a consistent set of conventions:
 
 - **Standardized Frontmatter:** Every `SKILL.md` begins with YAML frontmatter containing `name`, `description`, `license`, and `metadata` (author, version, repository). The `description` field includes trigger phrases for automatic skill selection.
 - **Self-Contained:** Each skill is fully self-contained in its directory. There are no cross-skill dependencies at the file level, though the ACP skill is intended to be invoked first for workflow management purposes.
+- **Agent Agnostic:** Skills are designed to work across any compatible AI agent platform. There are no framework-specific lock-ins — each skill is a portable Markdown document that any agent can parse and execute.
 - **Markdown-Based:** All skills are written in Markdown for maximum portability. They can be read by any text editor, rendered by any Markdown processor, and parsed programmatically.
 - **MIT Licensed:** All skills are released under the MIT License, permitting free use, modification, and distribution.
 - **Versioned:** Each skill tracks its own version independently using semantic versioning (or pre-release versioning for early-stage skills).
-- **Reference Materials:** Skills that benefit from supplementary templates or reference documents include them in a `references/` subdirectory.
+- **Reference Materials:** Skills that benefit from supplementary templates, language references, or documented learnings include them in a `references/` subdirectory.
 
 ---
 
