@@ -5,7 +5,7 @@ description: Audit, analyze, and produce a condensed intelligence brief for any 
   Triggers on phrases like "audit this repo", "review the codebase", "what does this project do",
   "get me up to speed", "brief me on", "understand this code", "code review", or when starting work
   on an unfamiliar codebase. Also triggers when the user asks to clone and review a repo.
-  This skill handles two modes: if a brief.md already exists, load it for instant orientation;
+  This skill handles two modes, if a brief.md already exists, load it for instant orientation;
   if not, perform a full audit and generate both a brief.md (condensed orientation) and an
   audit.md (detailed findings report).
 license: MIT
